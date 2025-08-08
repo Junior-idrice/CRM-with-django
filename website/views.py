@@ -1,7 +1,7 @@
 from django.shortcuts import render,redirect
 from django.contrib.auth import authenticate, login, logout
 from django.contrib import messages
-from .forms import SignUpForm
+from .forms import SignUpForm, Add
 from .models import Record
 # Create your views here.
 
@@ -9,8 +9,8 @@ def home(request):
     records = Record.objects.all()
 
     if request.method == "POST":
-        username = request.POST['username']
-        password = request.POST['password']
+        username = request.POST.get('username')
+        password = request.POST.get('password')
 
         user = authenticate(request, username = username, password=password)
         if user is not None:
@@ -71,4 +71,37 @@ def delete(request, pk):
         return redirect('home')
 
 def add(request):
-    return render(request, 'website/add.html',{})
+
+    form = Add(request.POST or None)
+    if request.user.is_authenticated:
+        if request.method=="POST":
+            if form.is_valid():
+                form.save()
+                messages.success(request, "record saaved")
+                return redirect('home')
+            else:
+                messages.error(request,"form in valid")
+        return render(request, 'website/add.html',{
+            'form':form
+        })
+    else:
+        messages.error(request,"you must be logged in" )
+        return redirect('home')
+    
+def update(request, pk):
+   # form = Record.objects.get(id=pk)
+    if request.user.is_authenticated:
+        record= Record.objects.get(id=pk)
+        form = Add(request.POST or None, instance=record)
+        if form.is_valid():
+            form.save()
+            messages.success(request, 'update perfectly')
+            return redirect('home')
+        return render(request, 'website/update.html',{
+        'form':form
+    })
+    else:
+        messages.success(request, "you must logged")
+        return redirect('home')
+
+
