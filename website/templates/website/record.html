@@ -1,0 +1,33 @@
+{%extends 'website/layout.html'%}
+
+
+
+{%block content%}
+<h1>Customer Record:</h1>
+
+<div class="card">
+  <div class="card-header"><strong>
+    {{record.first_name}}
+    {{record.last_name}}</strong>
+  </div>
+  <div class="card-body">
+    <p class="card-text">
+        <strong>Email: </strong>{{record.email}}<br/>
+        <strong>Phone: </strong>{{record.phone}}<br/>
+        <strong>City: </strong>{{record.city}}<br/>
+        <strong>State: </strong>{{record.state}}<br/>
+        <strong>Zipcode: </strong>{{record.zipcode}}<br/>
+        <strong>Creation time: </strong>{{record.creat_at}}<br/>
+        <strong>Id: </strong>{{record.id}}
+    </p>
+
+
+  </div>
+</div>
+
+<br>
+<a href="{%url 'home' %}" class="btn btn-secondary">Back</a>
+<a href="{%url 'delete' record.id %}" class="btn btn-danger">Delete</a>
+ 
+
+{%endblock%}
